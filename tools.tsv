@@ -1,0 +1,10 @@
+#id	repo	name	subdomain	pages_project
+hub	hallatec-forge-hub	Hallatec Forge Hub	forge.hallatec.com	hallatec-forge
+emailguard	hallatec-emailguard	EmailGuard	emailguard.hallatec.com	hallatec-emailguard
+hscore	hallatec-hscore	H-Score	hscore.hallatec.com	hallatec-hscore
+attackrank	hallatec-attackrank	AttackRank	attackrank.hallatec.com	hallatec-attackrank
+trustkey	hallatec-trustkey	TrustKey	trustkey.hallatec.com	hallatec-trustkey
+aegis365	hallatec-aegis365	Aegis365	aegis365.hallatec.com	hallatec-aegis365
+lifeline	hallatec-lifeline	Lifeline	lifeline.hallatec.com	hallatec-lifeline
+lockfall	hallatec-lockfall	Lockfall	lockfall.hallatec.com	hallatec-lockfall
+coremap	hallatec-coremap	CoreMap	coremap.hallatec.com	hallatec-coremap
