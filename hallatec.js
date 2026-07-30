@@ -188,6 +188,30 @@
 
   HTC.print = () => w.print();
 
+  /* ---- verdict handoff (the "Next move" step of the honest flow) ----
+     One canonical destination for every tool result: the parent site's
+     single funnel. Tagged with the tool and topic so the conversation
+     starts from what the visitor just measured.
+
+     The handoff is plain HTML in each tool so it works with no JS. This
+     helper exists so anything generated at runtime builds the SAME url -
+     do not hand-write assessment links elsewhere.
+
+     Optionally carries the score band (not the score itself, and never
+     the target/domain) so sales has context without the tool leaking
+     what was scanned. Honesty rule: nothing identifying leaves the page. */
+  HTC.PATH_BASE = "https://hallatec.com/assessment/";
+  HTC.pathHref = function pathHref(toolId, topic, band) {
+    const p = new URLSearchParams();
+    p.set("source", toolId || "forge");
+    if (topic) p.set("topic", topic);
+    if (band) p.set("band", band);          // "low" | "medium" | "high"
+    return HTC.PATH_BASE + "?" + p.toString();
+  };
+  /* Map a 0-100 score to a coarse band. Deliberately coarse. */
+  HTC.scoreBand = (score) =>
+    typeof score !== "number" ? null : score >= 70 ? "low" : score >= 40 ? "medium" : "high";
+
   /* smooth-scroll a result section into view (guarded for environments without scrollIntoView) */
   HTC.reveal = function (el) {
     if (!el) return;
