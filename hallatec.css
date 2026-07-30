@@ -28,22 +28,55 @@
   --logo-mark-color: url("logos/hallatec-mark-color.png");
   --logo-mark-white: url("logos/hallatec-mark-white.png");
 
-  /* Surfaces (near-black premium dark) */
-  --bg:        #0e0f13;
-  --surface:   #16181f;
-  --surface-2: #1c1f28;
-  --surface-3: #22252f;
-  --border:    rgba(255,255,255,.09);
-  --border-2:  rgba(255,255,255,.16);
-  --gtrack:    rgba(255,255,255,.10);   /* unlit gauge ticks */
+  /* Surfaces - WARM near-black, matched to hallatec.com (2026-07-30).
+     Neutrals are tinted toward the brand's own orange hue (OKLCH hue 40,
+     low chroma) so even the blacks belong to the palette. Never a cold
+     blue-gray, never pure #000. Hex first as a fallback, OKLCH second for
+     exact parity with the parent site on modern browsers.
 
-  /* Text */
-  --text:      #f5f6f8;
-  --text-dim:  #a3a8b4;
-  --text-mute: #868d9d;
+     --bg deliberately equals the PARENT'S CANVAS (ink, L 0.165), not its
+     tint band: a visitor crossing hallatec.com -> forge.hallatec.com should
+     land on an identical background. --bg-tint is the deeper band used for
+     section rhythm, mirroring the parent's ink-tint. */
+  --bg:        #130d0a;
+  --bg:        oklch(0.165 0.012 40);
+  --bg-tint:   #0c0706;
+  --bg-tint:   oklch(0.135 0.010 40);
+  --surface:   #1d1714;
+  --surface:   oklch(0.21 0.012 40);
+  --surface-2: #261e1c;
+  --surface-2: oklch(0.245 0.013 40);
+  --surface-3: #2b2320;
+  --surface-3: oklch(0.265 0.014 40);
+  /* Borders were hue-neutral white-alpha, which reads visibly GRAY over warm
+     ink at exactly the card edges the eye lands on. Warmed to match. */
+  --border:    #332c29;
+  --border:    oklch(0.300 0.012 40);
+  --border-2:  #433b38;
+  --border-2:  oklch(0.360 0.013 40);
+  --gtrack:    rgba(255,244,238,.10);   /* unlit gauge ticks, warm-white */
+
+  /* Text - warm-tinted to sit naturally on the warm surfaces */
+  --text:      #f7f4f2;
+  --text-dim:  #d8cfcb;
+  --text-dim:  oklch(0.86 0.012 40);
+  --text-mute: #ada29e;
+  --text-mute: oklch(0.72 0.014 40);
 
   /* Functional status tokens (semantic layer - restrained, WCAG-tuned,
-     always paired with label + icon; never colour-only). [Verify at suite level] */
+     always paired with label + icon; never colour-only). [Verify at suite level]
+
+     CROSS-PROPERTY NOTE (2026-07-30): --ok #43b581 is the CANONICAL
+     "verified/good" green for the whole Hallatec brand. hallatec.com was
+     realigned to THIS value, not the reverse, because here the colour is
+     load-bearing across 9 scoring gauges and was tuned for legibility;
+     on the parent it is decorative (pulse dots, one success state).
+     warn/bad/info stay Forge-only: the parent has no such semantics.
+     This is an intentional scope boundary, not brand drift.
+
+     MOTION BUDGET: the parent's heavy motion (WebGL Hyperspeed, marquee,
+     hover-grid) is a PARENT-ONLY layer. These pages run passive scans on
+     low-end devices; Forge motion stays CSS + IntersectionObserver only. */
   --ok:      #43b581;
   --ok-bg:   rgba(67,181,129,.12);
   --warn:    #e0a13c;
@@ -156,6 +189,10 @@ img, svg { max-width: 100%; }
 .nav-links { display: flex; gap: 6px; align-items: center; }
 .nav-links a { padding: 8px 13px; border-radius: 999px; font-size: 14px; color: var(--text-dim); font-weight: 500; transition: .18s; }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); }
+/* Return path to the parent site. Styled as an outbound pill so it reads as
+   "leaving Forge", not another in-page anchor. */
+.nav-links a.nav-home { border: 1px solid var(--border-2); color: var(--text); }
+.nav-links a.nav-home:hover { border-color: var(--h-orange); background: rgba(242,101,48,.10); }
 .back-link { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; color: var(--text-dim); font-weight: 500; }
 .back-link:hover { color: var(--text); }
 @media (max-width: 680px){ .nav-links { display: none; } }
@@ -176,6 +213,99 @@ img, svg { max-width: 100%; }
 .btn-sm { padding: 9px 15px; font-size: 13px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Specular sweep - matches the hallatec.com button language. A glossy
+   highlight crosses the surface on hover. Decorative only. */
+.btn { position: relative; overflow: hidden; }
+.btn::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%,
+              rgba(255,255,255,.30) 47%, rgba(255,255,255,.10) 53%, transparent 68%);
+  transform: translateX(-130%);
+  transition: transform .9s cubic-bezier(.22,1,.36,1);
+}
+.btn:hover::after { transform: translateX(130%); }
+.btn > * { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .btn::after { display: none; } }
+
+/* Section rhythm - alternating depth bands, as on hallatec.com. Keeps a
+   long dark page from reading as one flat slab. */
+.section-tint { background: var(--bg-tint); }
+.section-raise { background: var(--surface); }
+
+/* Credibility bridge to the parent business - quieter than the lead,
+   louder than fine print. */
+.lead-sub { max-width: 58ch; font-size: 15px; line-height: 1.65; color: var(--text-mute); }
+
+/* The one claim a competitor cannot copy cheaply. Given its own beat
+   instead of a stat-grid tile (2026-07-30 review board). */
+.no-data-claim {
+  margin-top: 34px; max-width: 46ch;
+  font-size: clamp(16px, 1.6vw, 18.5px); line-height: 1.6;
+  color: var(--text-dim);
+  border-left: 2px solid var(--h-orange); padding-left: 18px;
+}
+.no-data-claim strong { color: var(--text); font-weight: 600; }
+
+/* =====================================================================
+   THE FORGE SIGNATURE - "the honest flow" drawn as an actual pipeline.
+   Forge's own material, NOT borrowed from the parent: six lit nodes on a
+   hairline, traced once by a single pulse when scrolled into view. The
+   words carry the sequence, which is what removes the banned 01-06
+   numeral chips by construction. CSS + one IntersectionObserver only.
+   ===================================================================== */
+.flow {
+  list-style: none; margin: 0; padding: 0; position: relative;
+  display: grid; gap: 26px 20px; grid-template-columns: repeat(6, 1fr);
+}
+.flow::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 5px; height: 1px;
+  background: var(--border-2);
+}
+.flow::after {
+  content: ""; position: absolute; left: 0; top: 4px; height: 3px; width: 110px;
+  border-radius: 3px; background: var(--h-grad); filter: blur(1px);
+  opacity: 0; transform: translateX(-120px);
+}
+.flow.is-lit::after { animation: flow-trace 2.2s cubic-bezier(.55,0,.45,1) .15s forwards; }
+@keyframes flow-trace {
+  0%   { opacity: 0; transform: translateX(-120px); }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(100% + 12vw)); }
+}
+.flow-step { position: relative; padding-top: 22px; }
+.flow-node {
+  position: absolute; top: 0; left: 0; width: 11px; height: 11px;
+  border-radius: 50%; background: var(--bg-tint);
+  border: 1.5px solid var(--border-2); box-sizing: border-box;
+  transition: border-color .45s ease, box-shadow .45s ease;
+}
+.flow.is-lit .flow-node {
+  border-color: var(--h-orange); box-shadow: 0 0 0 3px rgba(242,101,48,.14);
+}
+.flow.is-lit .flow-step:nth-child(1) .flow-node { transition-delay: .25s; }
+.flow.is-lit .flow-step:nth-child(2) .flow-node { transition-delay: .55s; }
+.flow.is-lit .flow-step:nth-child(3) .flow-node { transition-delay: .85s; }
+.flow.is-lit .flow-step:nth-child(4) .flow-node { transition-delay: 1.15s; }
+.flow.is-lit .flow-step:nth-child(5) .flow-node { transition-delay: 1.45s; }
+.flow.is-lit .flow-step:nth-child(6) .flow-node { transition-delay: 1.75s; }
+.flow-label { display: block; font-weight: 600; font-size: 15px; color: var(--text); letter-spacing: -.01em; }
+.flow-step p { margin-top: 7px; font-size: 13.5px; line-height: 1.55; color: var(--text-mute); }
+
+/* Reduced motion: rail and nodes render lit and static, no trace. */
+@media (prefers-reduced-motion: reduce) {
+  .flow::after { display: none; }
+  .flow .flow-node { border-color: var(--h-orange); box-shadow: 0 0 0 3px rgba(242,101,48,.14); transition: none; }
+}
+/* Vertical rail on narrow screens. */
+@media (max-width: 900px) {
+  .flow { grid-template-columns: 1fr; gap: 22px; padding-left: 26px; }
+  .flow::before { left: 5px; right: auto; top: 6px; bottom: 6px; width: 1px; height: auto; }
+  .flow::after { display: none; }
+  .flow-step { padding-top: 0; }
+  .flow-node { top: 5px; left: -26px; }
+}
 
 /* ---------- 6. CARDS / SURFACES ---------- */
 .card {
