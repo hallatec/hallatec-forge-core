@@ -1,0 +1,32 @@
+name: Forge Drift Check
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout hallatec-forge-core
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Clone tool repositories
+        env:
+          GH_TOKEN: ${{ secrets.FORGE_SYNC_PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p ../forge
+          while IFS=$'\t' read -r ID REPO NAME SUB PROJ; do
+            case "$ID" in \#*|"") continue ;; esac
+            echo "Cloning $REPO..."
+            git clone --depth 1 "https://github.com/hallatec/$REPO.git" "../forge/$REPO"
+          done < tools.tsv
+
+      - name: Verify drift
+        run: node scripts/sync.mjs --check --target-dir="../forge"

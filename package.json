@@ -1,0 +1,13 @@
+{
+  "name": "@hallatec/forge-core",
+  "version": "1.0.0",
+  "description": "Canonical design core and sync engine for Hallatec Forge public tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync.mjs --write",
+    "sync:bump": "node scripts/sync.mjs --write --bump",
+    "drift:check": "node scripts/sync.mjs --check",
+    "test": "node --check hallatec.js"
+  }
+}
