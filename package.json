@@ -5,9 +5,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "node scripts/build-assets.mjs",
     "sync": "node scripts/sync.mjs --write",
     "sync:bump": "node scripts/sync.mjs --write --bump",
     "drift:check": "node scripts/sync.mjs --check",
     "test": "node --check hallatec.js"
+  },
+  "dependencies": {
+    "@hallatec/tokens": "file:../hallatec-tokens"
   }
 }
